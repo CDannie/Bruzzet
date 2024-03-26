@@ -57,11 +57,13 @@ int main(int argc, char *argv[])
 
     FILE *pt = fopen(argv[1], "r");
     int command; // current char
-    int commandCounter = 0;
     int a;
 
     int stack[MAX_INDEX];
     int stackp;
+
+    int queue[MAX_INDEX];
+    int queuep;
 
     function io;
     function math;
@@ -75,7 +77,6 @@ int main(int argc, char *argv[])
     while(!feof(pt))
     {
         command = fgetc(pt);
-        commandCounter++;
         switch(command)
         {
             case '(': // io
@@ -133,7 +134,7 @@ int main(int argc, char *argv[])
                         stackp--;
                         break;
                     default:
-                        printf("\nUnknown command: %d spaces between () at character %d\n(stopped)", a, commandCounter);
+                        printf("\nUnknown command: %d spaces between () at character %ld\n(stopped)", a, ftell(pt));
                         exit(1);
                 }
                 increaseArray(&math);
@@ -166,7 +167,7 @@ int main(int argc, char *argv[])
                         stackp--;
                         break;
                     default:
-                        printf("\nUnknown command: %d spaces between [] at character %d\n(stopped)", a, commandCounter);
+                        printf("\nUnknown command: %d spaces between [] at character %ld\n(stopped)", a, ftell(pt));
                         exit(1);
                 }
                 increaseArray(&io);
@@ -178,11 +179,21 @@ int main(int argc, char *argv[])
                 a = removeFunction(&stackf);
                 switch(a)
                 {
-                    case 1:
+                    case 1: // push 1
+                        stackp++;
+                        stack[stackp] = 1;
                         break;
-                    case 2:
+                    case 2: // duplicate top
+                        stack[stackp+1] = stack[stackp];
+                        stackp++;
                         break;
-                    case 3:
+                    case 3: // get top value to the bottom
+                        for (int i = stackp; i > 0; i--)
+                        {
+                            stack[i + 1] = stack[i];
+                        }
+                        stack[1] = stack[stackp + 1];
+                        stack[stackp + 1] = 0;
                         break;
                     case 4:
                         break;
@@ -190,11 +201,11 @@ int main(int argc, char *argv[])
                         stack[stackp] = 0;
                         stackp--;
                         break;
-                    case 6:
+                    case 6: // clear stack
                         memset(stack, 0, MAX_INDEX * sizeof(int));
                         break;
                     default:
-                        printf("\nUnknown command: %d spaces between <> at character %d\n(stopped)", a, commandCounter);
+                        printf("\nUnknown command: %d spaces between <> at character %ld\n(stopped)", a, ftell(pt));
                         exit(1);
                 }
                 increaseArray(&io);
@@ -215,13 +226,18 @@ int main(int argc, char *argv[])
                     case 4:
                         break;
                     default:
-                        printf("\nUnknown command: %d spaces between {} at character %d\n(stopped)", a, commandCounter);
+                        printf("\nUnknown command: %d spaces between {} at character %ld\n(stopped)", a, ftell(pt));
                         exit(1);
                 }
                 increaseArray(&io);
                 increaseArray(&math);
                 increaseArray(&stackf);
                 break;
+            case '/':
+                increaseArray(&io);
+                increaseArray(&math);
+                increaseArray(&stackf);
+                increaseArray(&cf);
             default:
                 break;
         }
