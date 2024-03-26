@@ -141,27 +141,27 @@ int main(int argc, char *argv[])
                 increaseArray(&stackf);
                 increaseArray(&cf);
                 break;
-            case ']': // math
+            case ']': // math with top values
                 increaseArraySelf(&math);
                 a = removeFunction(&math);
                 switch(a)
                 {
-                    case 1:
+                    case 1: // add
                         stack[stackp - 1] += stack[stackp];
                         stack[stackp] = 0;
                         stackp--;
                         break;
-                    case 2:
+                    case 2: // subtract
                         stack[stackp - 1] -= stack[stackp];
                         stack[stackp] = 0;
                         stackp--;
                         break;
-                    case 3:
+                    case 3: // multiply
                         stack[stackp - 1] *= stack[stackp];
                         stack[stackp] = 0;
                         stackp--;
                         break;
-                    case 4:
+                    case 4: // divide
                         stack[stackp - 1] /= stack[stackp];
                         stack[stackp] = 0;
                         stackp--;
@@ -195,9 +195,12 @@ int main(int argc, char *argv[])
                         stack[1] = stack[stackp + 1];
                         stack[stackp + 1] = 0;
                         break;
-                    case 4:
+                    case 4: // switch top values
+                        a = stack[stackp];
+                        stack[stackp] = stack[stackp - 1];
+                        stack[stackp - 1] = a;
                         break;
-                    case 5:
+                    case 5: // pop
                         stack[stackp] = 0;
                         stackp--;
                         break;
