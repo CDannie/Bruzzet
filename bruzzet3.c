@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define MAX_INDEX 100   // maximum length of arrays
+#define FALSE 0
 
 typedef struct
 {
@@ -57,7 +58,7 @@ int main(int argc, char *argv[])
 
     FILE *pt = fopen(argv[1], "r");
     int command; // current char
-    int a;
+    int a; // buffer integer
 
     int stack[MAX_INDEX];
     int stackp;
@@ -65,12 +66,10 @@ int main(int argc, char *argv[])
     int queue[MAX_INDEX];
     int queuep;
 
-    function io;
-    function math;
-    function stackf;
-    function cf;
-
-    function_init(&io); function_init(&math); function_init(&stackf); function_init(&cf);
+    function io;     function_init(&io);
+    function math;   function_init(&math);
+    function stackf; function_init(&stackf);
+    function cf;     function_init(&cf);
 
     printf("Program name: %s\n\n", argv[1]);
 
@@ -184,13 +183,13 @@ int main(int argc, char *argv[])
                         stack[stackp] = 1;
                         break;
                     case 2: // duplicate top
-                        stack[stackp+1] = stack[stackp];
                         stackp++;
+                        stack[stackp] = stack[stackp];
                         break;
                     case 3: // get top value to the bottom
-                        for (int i = stackp; i > 0; i--)
+                        for(a = stackp; a > 0; a--)
                         {
-                            stack[i + 1] = stack[i];
+                            stack[a + 1] = stack[a];
                         }
                         stack[1] = stack[stackp + 1];
                         stack[stackp + 1] = 0;
@@ -221,14 +220,20 @@ int main(int argc, char *argv[])
                 switch(a)
                 {
                     case 1:
+                        if(stack[stackp] == FALSE)
+                        {
+                            exit(0);
+                        }
                         break;
                     case 2:
+                        
                         break;
                     case 3:
                         break;
                     case 4:
                         break;
                     default:
+                        if(a >= 8);
                         printf("\nUnknown command: %d spaces between {} at character %ld\n(stopped)", a, ftell(pt));
                         exit(1);
                 }
@@ -245,7 +250,6 @@ int main(int argc, char *argv[])
                 break;
         }
     }
-
     fclose(pt);
     return 0;
 }
